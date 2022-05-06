@@ -19,6 +19,11 @@ log = logging.getLogger('bot')
 
 
 class Bot:
+    """
+    Chatbot for the community on vk.com
+
+    Use python 3.10
+    """
 
     def __init__(self, group_id, token):
         """
@@ -32,15 +37,20 @@ class Bot:
         self.api = self.vk.get_api()
 
     def run(self):
+        """
+        Launches the chatbot
+        :return: None
+        """
         for event in self.long_poller.listen():
             try:
                 self.on_event(event)
-            except Exception:
-                log.exception('ошибка в обработке события')
+            except Exception as exc:
+                log.exception(f'ошибка в обработке события', {exc})
 
     @db_session
     def on_event(self, event):
         """
+        Handles the event
         :param event: VkBotMessageEvent object
         :return: None
         """
