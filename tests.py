@@ -8,7 +8,7 @@ from vk_api.bot_longpoll import VkBotMessageEvent
 
 from bot import Bot
 import settings
-from generate_ticket import generate_ticket
+from generate_ticket import generate_invitation
 
 
 def isolate_db(test_func):
@@ -48,21 +48,77 @@ class Test1(TestCase):
 
     INPUTS = [
         'Привет',
-        'А когда?',
+        'А когда будет конференция?',
         'Где будет конференция?',
+        'до какого числа можно подать заявку на конференцию?',
+        'какие направления будут на конференции?',
+        'могу ли я изменить ранее поданную заявку?',
+        'хочу удалить заявку. Как мне это сделать?',
+        'могу ли я подать заявку без указания научного руководителя?',
+        'если я не являюсь студентом, можно ли мне участвовать в конференции?',
+        'кто может участвовать в конференции?',
+        'аспиранты могут участвовать в конференции?',
+        'сертификаты будут выдавать?',
+        'спасибо за ответ',
         'Зарегистрируй меня',
-        'Виталий',
-        'мой адрес email@email',
-        'email@email.ru',
+        'Сомов Алексей',
+        'Сомов Алексей Михайлович',
+        'мой адрес alex@email',
+        'alex@email.ru',
+        'СПбГУ',
+        'компьютерная и прикладная лингвистика',
+        'магистратура',
+        '2',
+        'Анализ тональности новостных текстов',
+        'дискурс анализ',
+        'компьютерная и прикладная лингвистика',
+        'Николай Петрович',
+        'Иванов Николай Петрович',
+        'да'
     ]
     EXPECTED_OUTPUTS = [
-        settings.DEFAULT_ANSWER,
+        settings.INTENTS[10]['answer'],
         settings.INTENTS[0]['answer'],
         settings.INTENTS[1]['answer'],
+        settings.INTENTS[2]['answer'],
+        settings.INTENTS[3]['answer'],
+        settings.INTENTS[4]['answer'],
+        settings.INTENTS[5]['answer'],
+        settings.INTENTS[6]['answer'],
+        settings.INTENTS[7]['answer'],
+        settings.INTENTS[7]['answer'],
+        settings.INTENTS[7]['answer'],
+        settings.INTENTS[8]['answer'],
+        settings.INTENTS[9]['answer'],
         settings.SCENARIOS['registration']['steps']['step1']['text'],
+        settings.SCENARIOS['registration']['steps']['step1']['failure_text'],
         settings.SCENARIOS['registration']['steps']['step2']['text'],
         settings.SCENARIOS['registration']['steps']['step2']['failure_text'],
-        settings.SCENARIOS['registration']['steps']['step3']['text'].format(name='Виталий', email='email@email.ru')
+        settings.SCENARIOS['registration']['steps']['step3']['text'],
+        settings.SCENARIOS['registration']['steps']['step4']['text'],
+        settings.SCENARIOS['registration']['steps']['step5']['text'],
+        settings.SCENARIOS['registration']['steps']['step6']['text'],
+        settings.SCENARIOS['registration']['steps']['step7']['text'],
+        settings.SCENARIOS['registration']['steps']['step8']['text'],
+        settings.SCENARIOS['registration']['steps']['step8']['failure_text'],
+        settings.SCENARIOS['registration']['steps']['step9']['text'],
+        settings.SCENARIOS['registration']['steps']['step9']['failure_text'],
+        settings.SCENARIOS['registration']['steps']['step10']['text'].format(name='Сомов Алексей Михайлович',
+                                                                             email='alex@email.ru',
+                                                                             university='СПбГУ',
+                                                                             faculty='компьютерная и прикладная '
+                                                                                     'лингвистика',
+                                                                             program='магистратура',
+                                                                             year_of_study='2',
+                                                                             report='Анализ тональности новостных '
+                                                                                    'текстов',
+                                                                             section='компьютерная и прикладная '
+                                                                                     'лингвистика',
+                                                                             scientific_supervisor='Иванов Николай '
+                                                                                                   'Петрович',
+                                                                             ),
+        settings.SCENARIOS['registration']['steps']['step11']['text'].format(name='Сомов Алексей Михайлович',
+                                                                             email='alex@email.ru')
     ]
 
     @isolate_db
@@ -94,16 +150,11 @@ class Test1(TestCase):
             real_outputs.append(kwargs['message'])
         assert real_outputs == self.EXPECTED_OUTPUTS
 
-    def test_generate_ticket(self):
-        with open('files/avatar.png', 'rb') as avatar_file:
-            avatar_mock = Mock()
-            avatar_mock.content = avatar_file.read()
+    def test_generate_invitation(self):
 
-        with patch('requests.get', return_value=avatar_mock):
-            ticket_file = generate_ticket('Анна', 'anna@gmail.com')
+        ticket_file = generate_invitation('Сомова Анна Алексеевна', 'Анализ тональности новостных текстов')
 
-        with open('files/ticket-example.png', 'rb') as expected_file:
+        with open('files/invitation_example.png', 'rb') as expected_file:
             expected_bytes = expected_file.read()
 
         assert ticket_file.read() == expected_bytes
-

@@ -5,7 +5,7 @@ True, если шаг пройден, False, если данные введен�
 """
 
 import re
-from generate_ticket import generate_ticket
+from generate_ticket import generate_invitation
 from settings import SECTIONS
 
 re_name = re.compile(r'([А-ЯЁ][а-яё]+[\-\s]?){3,}')
@@ -101,5 +101,5 @@ def handle_confirmation(text, context):
         return False
 
 
-def generate_ticket_handler(text, context):
-    return generate_ticket(name=context['name'], report=context['report'])
+def generate_invitation_handler(text, context):
+    return generate_invitation(name=context['name'], report=context['report'])

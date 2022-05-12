@@ -6,11 +6,11 @@ TEMPLATE_PATH = 'files/invitation.png'
 FONT_PATH = 'files/try-clother-bold.ttf'
 FONT_SIZE = 15
 BLACK = (0, 0, 0, 225)
-NAME_OFFSET = (350, 100)
-REPORT_OFFSET = (350, 130)
+NAME_OFFSET = (180, 180)
+REPORT_OFFSET = (180, 210)
 
 
-def generate_ticket(name, report):
+def generate_invitation(name, report):
     with Image.open(TEMPLATE_PATH).convert("RGBA") as base:
         font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
         draw = ImageDraw.Draw(base)

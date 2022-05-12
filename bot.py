@@ -61,6 +61,7 @@ class Bot:
         text = event.object.text
         state = UserState.get(user_id=str(user_id))
         for intent in settings.INTENTS:
+            log.debug(f'Интент, полученный от пользователя {intent}')
             if any(token in text.lower() for token in intent['tokens']):
                 if intent['answer']:
                     self.send_text(intent['answer'], user_id)
